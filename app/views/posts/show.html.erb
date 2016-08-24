@@ -1,1 +1,71 @@
 
+title:
+<br>
+<%= @post.title %>
+
+<br><br>
+
+content:
+<br>
+<%= @post.content %>
+
+<br><br>
+
+
+categories:
+<br>
+<% @post.categories.each do |x| %>
+<%= x.name %>
+<% end %>
+
+<br><br>
+
+comments:
+<% @post.comments.each do |comment| %>
+<br>
+<%= comment.user.username %> says: <%= comment.content  %>
+<% end %>
+
+<br><br>
+
+unique commentors:
+<% user_array = [] %> 
+<% @post.comments.each do |comment| %>
+<% user_array << comment.user.username %>
+<% end %>
+<% user_array.uniq.each do |user| %>
+<br>
+<%= link_to user, user_path(User.find_by(username: user)) %>
+<% end %>
+
+<br><br>
+
+new comment: 
+<%= form_for @comment do |f| %>
+<%= f.text_field :content %>
+<br> 
+<br> 
+
+choose user: 
+<br>
+<%= f.collection_select :user_id, User.all, :id, :username %>
+  
+<br>
+<br>
+
+  <%= f.fields_for :user, @comment.user do |cf| %>
+  
+  or new username:
+  <br>
+  <%= cf.text_field :username, id: "comment_user_attributes_username"%>
+  
+  <%= f.hidden_field :post_id, :value => @post.id %>
+
+  <% end %>
+<br>
+<br>
+
+  <%= f.submit %>
+
+<% end %>
+
